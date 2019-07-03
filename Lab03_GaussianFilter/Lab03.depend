@@ -1,0 +1,11 @@
+# depslib dependency file v1.0
+1550574212 source:c:\mysandbox\potatoproductqualifier\countpallets\lab03\main.cpp
+	<iostream>
+	<vector>
+	<assert.h>
+	<cmath>
+	<opencv2/core/core.hpp>
+	<opencv2/imgcodecs.hpp>
+	<opencv2/highgui/highgui.hpp>
+	<opencv2/opencv.hpp>
+
