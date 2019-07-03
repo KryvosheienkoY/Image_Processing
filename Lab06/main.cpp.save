@@ -1,0 +1,141 @@
+//#include <iostream>
+//#include "opencv2/core/core.hpp"
+//#include "opencv2/imgproc/imgproc.hpp"
+//#include "opencv2/highgui/highgui.hpp"
+//using namespace cv;
+//
+//uchar* makeErosion(Mat source, int w, int h)
+//{
+//    //  Mat resultedIm (w, h, CV_8UC1, source.data);
+//    //    Mat resultedIm1 (h, w, CV_8UC1, source.data);
+//    // imshow("Erosion1", resultedIm1);
+//      uchar *result = new uchar[w*h] ;
+////      for(int k=0; k<w*h;k++)
+////        result[k]=255;
+//
+//    for(int i=1; i<h-1; i++)
+//    {
+//        for(int j=1; j<w-1; j++)
+//        {
+//            if(source.data[(i-1)*w+j-1]==0 || source.data[(i-1)*w+j]==0|| source.data[w*(i-1)+j+1]==0
+//                    || source.data[w*(i)+j-1]==0 ||source.data[w*(i)+j+1]==0
+//                    || source.data[w*(i+1)+j-1]==0 || source.data[w*(i+1)+j]==0 ||source.data[w*(i+1)+j+1]==0)
+//            {
+//                result[i*w+j]=0;
+//            }
+//            else
+//            {
+//                result[w*i+j]=255;
+//            }
+//        }
+//    }
+//      Mat resultedIm1 (h, w, CV_8UC1, result);
+//     imshow("Erosion1", resultedIm1);
+//      return result;
+//}
+//
+//Mat detectEdges(Mat source, uchar* res)
+//{
+////    uchar* res = new uchar[w*h];
+//int w = source.cols;
+//int h = source.rows;
+//   for(int i=1; i<h-1; i++)
+//    {
+//        for(int j=1; j<w-1; j++)
+//        {
+//            if(source.data[(i)*w+j]!= res[i*w+j])
+//                source.data[i*w+j]=255;
+//            else
+//                 source.data[i*w+j]=0;
+//        }
+//    }
+//    return source;
+//}
+//
+//int main()
+//{
+//
+//    Mat image= imread("C:/DEV/Pictures/Tif/contour(1).tif");
+//    if (!image.data)
+//    {
+//        std::cout << "image file not found\n";
+//        return 1;
+//    }
+//    imshow("Original image", image);
+//
+//    int height =image.rows;
+//    int width = image.cols;
+//    Mat im(height,width,CV_8UC1,Scalar(0));
+//    uchar* result =makeErosion(image, width, height);
+////    Mat resultedIm (height, width, CV_8UC1, erosionRes);
+////  detectEdges(image, result);
+//
+////   Mat resultedIm (height, width, CV_8UC1, res);
+//    imshow("Result", detectEdges(image, result));
+//
+//    waitKey();
+//    return 0;
+//}
+
+#include <iostream>
+
+#include <opencv2/core/core.hpp>
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/highgui/highgui.hpp>
+using namespace cv;
+using namespace std;
+
+void erosion(uchar* source, uchar* res, int w,int h)
+{
+    for(int i=1; i<w-1; i++)
+    {
+        for(int j=1; j<h-1; j++)
+        {
+            if(source[(i)*w+j]==0||source[(i-1)*w+j]==0||source[(i-1)*w+j+1]==0||source[(i-1)*w+j-1]==0||source[(i+1)*w+j-1]==0||source[(i+1)*w+j]==0||source[(i+1)*w+j+1]==0||source[(i)*w+j-1]==0||source[(i)*w+j+1]==0)
+                res[i*w+j]=0;
+            else
+                res[i*w+j]=255;
+        }
+    }
+}
+
+void edgeDetection(uchar* source, uchar* res,  int w,int h)
+{
+    for(int i=1; i<w-1; i++)
+    {
+        for(int j=1; j<h-1; j++)
+        {
+            if(source[(i)*w+j]!= res[i*w+j])
+                res[i*w+j]=255;
+            else
+                res[i*w+j]=0;
+        }
+    }
+}
+
+
+
+int main()
+{
+    Mat image;
+    image= cv::imread("C:/DEV/Pictures/TIF/contour(1).tif", IMREAD_GRAYSCALE );
+    if (image.data == 0)
+    {
+        cout << "Could not open or find the image" <<endl;
+        return -1;
+    }
+
+    int height = image.rows;
+    int width = image.cols;
+    uchar*  matrix = image.data;
+
+    Mat resIm(height, width, CV_8UC1, Scalar(0));
+    erosion(image.data, resIm.data,width, height);
+    edgeDetection(image.data, resIm.data, width, height);
+
+    imshow( "Original im", image );
+    imshow("Resu", resIm);
+
+    waitKey(0);
+    return 0;
+}
