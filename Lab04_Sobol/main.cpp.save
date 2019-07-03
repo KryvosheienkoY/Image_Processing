@@ -1,0 +1,61 @@
+#include<iostream>
+#include<cmath>
+#include<opencv2/imgproc/imgproc.hpp>
+#include<opencv2/highgui/highgui.hpp>
+
+using namespace std;
+using namespace cv;
+
+int xGradient(uchar* ar, int width, int x, int y)
+{
+    return ar[(y-1)*width+x-1]+2*ar[y*width+x-1]+ar[(y+1)*width+x-1]-ar[(y-1)*width+x+1]- 2*ar[y*width+x+1]-ar[(y+1)*width+x+1];
+}
+
+int yGradient(uchar* ar, int width, int x, int y)
+{
+    return ar[(y-1)*width+x-1]+2*ar[(y-1)*width+x]+ar[(y-1)*width+x+1]-ar[(y+1)*width+x-1]-2*ar[(y+1)*width+x]-ar[(y+1)*width+x+1];
+}
+
+Mat operatorSobol(uchar* data, int height, int width)
+{
+    uchar* dataNewAr = new uchar[height*width];
+    int gx;
+    int gy;
+    int sum;
+    for(int y = 1; y < height - 1; y++)
+    {
+        for(int x = 1; x < width- 1; x++)
+        {
+            gx = xGradient(data, width, x, y);
+            gy = yGradient(data, width, x, y);
+            sum = abs(gx) + abs(gy);
+            sum = sum > 255 ? 255:sum;
+            sum = sum < 0 ? 0 : sum;
+            dataNewAr[y*width+x] = sum;
+        }
+    }
+    Mat newIM(height, width, CV_8UC1, dataNewAr);
+    return newIm;
+}
+
+int main()
+{
+    Mat img;
+    // Load an image
+    img = imread("C:/DEV/Pictures/Tif/Geneva.tif", CV_LOAD_IMAGE_GRAYSCALE);
+    if( !img.data )
+    {
+        return -1;
+    }
+
+    int height = img.rows;
+    int width = img. cols;
+
+    Mat newIM= operatorSobol(img.data, img.)
+    imshow("New", newIM);
+    imshow("Original", img);
+
+    waitKey();
+
+    return 0;
+}
